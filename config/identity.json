@@ -1,0 +1,23 @@
+{
+    "owner": {
+        "name": "",
+        "preferred_name": "",
+        "role": "",
+        "location": "",
+        "interests": [],
+        "about": ""
+    },
+    "assistant": {
+        "name": "Ultron Jarvis",
+        "application_name": "Ultron Jarvis (Hidayat AI)",
+        "title": "Ultron Jarvis - Hidayat AI"
+    },
+    "behavior": {
+        "mode": "professional",
+        "proactive": true,
+        "custom_instructions": ""
+    },
+    "system": {
+        "shared_computer": false
+    }
+}

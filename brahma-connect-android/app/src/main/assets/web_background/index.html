@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ultron Jarvis 3D WebGL Living AI Background</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; overflow: hidden; background: #050505; }
+    #canvas-container { width: 100%; height: 100%; position: absolute; inset: 0; }
+  </style>
+
+  <!-- Local Offline Three.js UMD Scripts -->
+  <script src="three.min.js">
+        // Added for setup wizard boot sequence
+        window.accelerateReactor = function() {
+            // Speed up the rotation drastically for the boot sequence
+            if (window.controls) {
+                window.controls.autoRotateSpeed = 25.0;
+            }
+        };
+    
+
+        // Cinematic Reactor Controls for Setup Wizard
+        window.triggerPulse = function() {
+            if (!window.glowMaterial) return;
+            let originalIntensity = window.glowMaterial.uniforms.c.value;
+            let originalScale = window.glowMesh ? window.glowMesh.scale.x : 1;
+            
+            let t = 0;
+            let pulseInterval = setInterval(() => {
+                t += 0.1;
+                if (t <= 1) {
+                    window.glowMaterial.uniforms.c.value = originalIntensity + (t * 0.5);
+                    if (window.glowMesh) window.glowMesh.scale.setScalar(originalScale + (t * 0.2));
+                } else if (t <= 2) {
+                    let dt = t - 1;
+                    window.glowMaterial.uniforms.c.value = originalIntensity + 0.5 - (dt * 0.5);
+                    if (window.glowMesh) window.glowMesh.scale.setScalar(originalScale + 0.2 - (dt * 0.2));
+                } else {
+                    clearInterval(pulseInterval);
+                    window.glowMaterial.uniforms.c.value = originalIntensity;
+                    if (window.glowMesh) window.glowMesh.scale.setScalar(originalScale);
+                }
+            }, 16);
+        };
+        
+        window.losePower = function() {
+            if (!window.glowMaterial) return;
+            let originalIntensity = window.glowMaterial.uniforms.c.value;
+            window.glowMaterial.uniforms.c.value = 0.1;
+            if (window.controls) window.controls.autoRotateSpeed = 0.5;
+            
+            setTimeout(() => {
+                let t = 0;
+                let recoverInterval = setInterval(() => {
+                    t += 0.05;
+                    if (t <= 1) {
+                        window.glowMaterial.uniforms.c.value = 0.1 + (t * (originalIntensity - 0.1));
+                        if (window.controls) window.controls.autoRotateSpeed = 0.5 + (t * 1.5);
+                    } else {
+                        clearInterval(recoverInterval);
+                        window.glowMaterial.uniforms.c.value = originalIntensity;
+                        if (window.controls) window.controls.autoRotateSpeed = 2.0;
+                    }
+                }, 16);
+            }, 1000);
+        };
+        
+        window.setReactorSpeed = function(speed) {
+            if (window.controls) {
+                window.controls.autoRotateSpeed = speed;
+            }
+        };
+        
+        window.dissolveReactor = function() {
+            if (window.glowMaterial) window.glowMaterial.uniforms.c.value = 3.0;
+            setTimeout(() => {
+                if (window.glowMaterial) window.glowMaterial.uniforms.c.value = 1.0;
+                window.setReactorSpeed(2.0);
+            }, 500);
+        };
+
+</script>
+  <script src="OrbitControls.js">
+        // Added for setup wizard boot sequence
+        window.accelerateReactor = function() {
+            // Speed up the rotation drastically for the boot sequence
+            if (window.controls) {
+                window.controls.autoRotateSpeed = 25.0;
+            }
+        };
+    
+
+        // Cinematic Reactor Controls for Setup Wizard
+        window.triggerPulse = function() {
+            if (!window.glowMaterial) return;
+            let originalIntensity = window.glowMaterial.uniforms.c.value;
+            let originalScale = window.glowMesh ? window.glowMesh.scale.x : 1;
+            
+            let t = 0;
+            let pulseInterval = setInterval(() => {
+                t += 0.1;
+                if (t <= 1) {
+                    window.glowMaterial.uniforms.c.value = originalIntensity + (t * 0.5);
+                    if (window.glowMesh) window.glowMesh.scale.setScalar(originalScale + (t * 0.2));
+                } else if (t <= 2) {
+                    let dt = t - 1;
+                    window.glowMaterial.uniforms.c.value = originalIntensity + 0.5 - (dt * 0.5);
+                    if (window.glowMesh) window.glowMesh.scale.setScalar(originalScale + 0.2 - (dt * 0.2));
+                } else {
+                    clearInterval(pulseInterval);
+                    window.glowMaterial.uniforms.c.value = originalIntensity;
+                    if (window.glowMesh) window.glowMesh.scale.setScalar(originalScale);
+                }
+            }, 16);
+        };
+        
+        window.losePower = function() {
+            if (!window.glowMaterial) return;
+            let originalIntensity = window.glowMaterial.uniforms.c.value;
+            window.glowMaterial.uniforms.c.value = 0.1;
+            if (window.controls) window.controls.autoRotateSpeed = 0.5;
+            
+            setTimeout(() => {
+                let t = 0;
+                let recoverInterval = setInterval(() => {
+                    t += 0.05;
+                    if (t <= 1) {
+                        window.glowMaterial.uniforms.c.value = 0.1 + (t * (originalIntensity - 0.1));
+                        if (window.controls) window.controls.autoRotateSpeed = 0.5 + (t * 1.5);
+                    } else {
+                        clearInterval(recoverInterval);
+                        window.glowMaterial.uniforms.c.value = originalIntensity;
+                        if (window.controls) window.controls.autoRotateSpeed = 2.0;
+                    }
+                }, 16);
+            }, 1000);
+        };
+        
+        window.setReactorSpeed = function(speed) {
+            if (window.controls) {
+                window.controls.autoRotateSpeed = speed;
+            }
+        };
+        
+        window.dissolveReactor = function() {
+            if (window.glowMaterial) window.glowMaterial.uniforms.c.value = 3.0;
+            setTimeout(() => {
+                if (window.glowMaterial) window.glowMaterial.uniforms.c.value = 1.0;
+                window.setReactorSpeed(2.0);
+            }, 500);
+        };
+
+</script>
+  <script src="CopyShader.js">
+        // Added for setup wizard boot sequence
+        window.accelerateReactor = function() {
+            // Speed up the rotation drastically for the boot sequence
+            if (window.controls) {
+                window.controls.autoRotateSpeed = 25.0;
+            }
+        };
+    
+
+        // Cinematic Reactor Controls for Setup Wizard
+        window.triggerPulse = function() {
+            if (!window.glowMaterial) return;
+            let originalIntensity = window.glowMaterial.uniforms.c.value;
+            let originalScale = window.glowMesh ? window.glowMesh.scale.x : 1;
+            
+            let t = 0;
+            let pulseInterval = setInterval(() => {
+                t += 0.1;
+                if (t <= 1) {
+                    window.glowMaterial.uniforms.c.value = originalIntensity + (t * 0.5);
+                    if (window.glowMesh) window.glowMesh.scale.setScalar(originalScale + (t * 0.2));
+                } else if (t <= 2) {
+                    let dt = t - 1;
+                    window.glowMaterial.uniforms.c.value = originalIntensity + 0.5 - (dt * 0.5);
+                    if (window.glowMesh) window.glowMesh.scale.setScalar(originalScale + 0.2 - (dt * 0.2));
+                } else {
+                    clearInterval(pulseInterval);
+                    window.glowMaterial.uniforms.c.value = originalIntensity;
+                    if (window.glowMesh) window.glowMesh.scale.setScalar(originalScale);
+                }
+            }, 16);
+        };
+        
+        window.losePower = function() {
+            if (!window.glowMaterial) return;
+            let originalIntensity = window.glowMaterial.uniforms.c.value;
+            window.glowMaterial.uniforms.c.value = 0.1;
+            if (window.controls) window.controls.autoRotateSpeed = 0.5;
+            
+            setTimeout(() => {
+                let t = 0;
+                let recoverInterval = setInterval(() => {
+                    t += 0.05;
+                    if (t <= 1) {
+                        window.glowMaterial.uniforms.c.value = 0.1 + (t * (originalIntensity - 0.1));
+                        if (window.controls) window.controls.autoRotateSpeed = 0.5 + (t * 1.5);
+                    } else {
+                        clearInterval(recoverInterval);
+                        window.glowMaterial.uniforms.c.value = originalIntensity;
+                        if (window.controls) window.controls.autoRotateSpeed = 2.0;
+                    }
+                }, 16);
+            }, 1000);
+        };
+        
+        window.setReactorSpeed = function(speed) {
+            if (window.controls) {
+                window.controls.autoRotateSpeed = speed;
+            }
+        };
+        
+        window.dissolveReactor = function() {
+            if (window.glowMaterial) window.glowMaterial.uniforms.c.value = 3.0;
+            setTimeout(() => {
+                if (window.glowMaterial) window.glowMaterial.uniforms.c.value = 1.0;
+                window.setReactorSpeed(2.0);
+            }, 500);
+        };
+
+</script>
+  <script src="LuminosityHighPassShader.js">
+        // Added for setup wizard boot sequence
+        window.accelerateReactor = function() {
+            // Speed up the rotation drastically for the boot sequence
+            if (window.controls) {
+                window.controls.autoRotateSpeed = 25.0;
+            }
+        };
+    
+
+        // Cinematic Reactor Controls for Setup Wizard
+        window.triggerPulse = function() {
+            if (!window.glowMaterial) return;
+            let originalIntensity = window.glowMaterial.uniforms.c.value;
+            let originalScale = window.glowMesh ? window.glowMesh.scale.x : 1;
+            
+            let t = 0;
+            let pulseInterval = setInterval(() => {
+                t += 0.1;
+                if (t <= 1) {
+                    window.glowMaterial.uniforms.c.value = originalIntensity + (t * 0.5);
+                    if (window.glowMesh) window.glowMesh.scale.setScalar(originalScale + (t * 0.2));
+                } else if (t <= 2) {
+                    let dt = t - 1;
+                    window.glowMaterial.uniforms.c.value = originalIntensity + 0.5 - (dt * 0.5);
+                    if (window.glowMesh) window.glowMesh.scale.setScalar(originalScale + 0.2 - (dt * 0.2));
+                } else {
+                    clearInterval(pulseInterval);
+                    window.glowMaterial.uniforms.c.value = originalIntensity;
+                    if (window.glowMesh) window.glowMesh.scale.setScalar(originalScale);
+                }
+            }, 16);
+        };
+        
+        window.losePower = function() {
+            if (!window.glowMaterial) return;
+            let originalIntensity = window.glowMaterial.uniforms.c.value;
+            window.glowMaterial.uniforms.c.value = 0.1;
+            if (window.controls) window.controls.autoRotateSpeed = 0.5;
+            
+            setTimeout(() => {
+                let t = 0;
+                let recoverInterval = setInterval(() => {
+                    t += 0.05;
+                    if (t <= 1) {
+                        window.glowMaterial.uniforms.c.value = 0.1 + (t * (originalIntensity - 0.1));
+                        if (window.controls) window.controls.autoRotateSpeed = 0.5 + (t * 1.5);
+                    } else {
+                        clearInterval(recoverInterval);
+                        window.glowMaterial.uniforms.c.value = originalIntensity;
+                        if (window.controls) window.controls.autoRotateSpeed = 2.0;
+                    }
+                }, 16);
+            }, 1000);
+        };
+        
+        window.setReactorSpeed = function(speed) {
+            if (window.controls) {
+                window.controls.autoRotateSpeed = speed;
+            }
+        };
+        
+        window.dissolveReactor = function() {
+            if (window.glowMaterial) window.glowMaterial.uniforms.c.value = 3.0;
+            setTimeout(() => {
+                if (window.glowMaterial) window.glowMaterial.uniforms.c.value = 1.0;
+                window.setReactorSpeed(2.0);
+            }, 500);
+        };
+
+</script>
+  <script src="EffectComposer.js">
+        // Added for setup wizard boot sequence
+        window.accelerateReactor = function() {
+            // Speed up the rotation drastically for the boot sequence
+            if (window.controls) {
+                window.controls.autoRotateSpeed = 25.0;
+            }
+        };
+    
+
+        // Cinematic Reactor Controls for Setup Wizard
+        window.triggerPulse = function() {
+            if (!window.glowMaterial) return;
+            let originalIntensity = window.glowMaterial.uniforms.c.value;
+            let originalScale = window.glowMesh ? window.glowMesh.scale.x : 1;
+            
+            let t = 0;
+            let pulseInterval = setInterval(() => {
+                t += 0.1;
+                if (t <= 1) {
+                    window.glowMaterial.uniforms.c.value = originalIntensity + (t * 0.5);
+                    if (window.glowMesh) window.glowMesh.scale.setScalar(originalScale + (t * 0.2));
+                } else if (t <= 2) {
+                    let dt = t - 1;
+                    window.glowMaterial.uniforms.c.value = originalIntensity + 0.5 - (dt * 0.5);
+                    if (window.glowMesh) window.glowMesh.scale.setScalar(originalScale + 0.2 - (dt * 0.2));
+                } else {
+                    clearInterval(pulseInterval);
+                    window.glowMaterial.uniforms.c.value = originalIntensity;
+                    if (window.glowMesh) window.glowMesh.scale.setScalar(originalScale);
+                }
+            }, 16);
+        };
+        
+        window.losePower = function() {
+            if (!window.glowMaterial) return;
+            let originalIntensity = window.glowMaterial.uniforms.c.value;
+            window.glowMaterial.uniforms.c.value = 0.1;
+            if (window.controls) window.controls.autoRotateSpeed = 0.5;
+            
+            setTimeout(() => {
+                let t = 0;
+                let recoverInterval = setInterval(() => {
+                    t += 0.05;
+                    if (t <= 1) {
+                        window.glowMaterial.uniforms.c.value = 0.1 + (t * (originalIntensity - 0.1));
+                        if (window.controls) window.controls.autoRotateSpeed = 0.5 + (t * 1.5);
+                    } else {
+                        clearInterval(recoverInterval);
+                        window.glowMaterial.uniforms.c.value = originalIntensity;
+                        if (window.controls) window.controls.autoRotateSpeed = 2.0;
+                    }
+                }, 16);
+            }, 1000);
+        };
+        
+        window.setReactorSpeed = function(speed) {
+            if (window.controls) {
+                window.controls.autoRotateSpeed = speed;
+            }
+        };
+        
+        window.dissolveReactor = function() {
+            if (window.glowMaterial) window.glowMaterial.uniforms.c.value = 3.0;
+            setTimeout(() => {
+                if (window.glowMaterial) window.glowMaterial.uniforms.c.value = 1.0;
+                window.setReactorSpeed(2.0);
+            }, 500);
+        };
+
+</script>
+  <script src="RenderPass.js">
+        // Added for setup wizard boot sequence
+        window.accelerateReactor = function() {
+            // Speed up the rotation drastically for the boot sequence
+            if (window.controls) {
+                window.controls.autoRotateSpeed = 25.0;
+            }
+        };
+    
+
+        // Cinematic Reactor Controls for Setup Wizard
+        window.triggerPulse = function() {
+            if (!window.glowMaterial) return;
+            let originalIntensity = window.glowMaterial.uniforms.c.value;
+            let originalScale = window.glowMesh ? window.glowMesh.scale.x : 1;
+            
+            let t = 0;
+            let pulseInterval = setInterval(() => {
+                t += 0.1;
+                if (t <= 1) {
+                    window.glowMaterial.uniforms.c.value = originalIntensity + (t * 0.5);
+                    if (window.glowMesh) window.glowMesh.scale.setScalar(originalScale + (t * 0.2));
+                } else if (t <= 2) {
+                    let dt = t - 1;
+                    window.glowMaterial.uniforms.c.value = originalIntensity + 0.5 - (dt * 0.5);
+                    if (window.glowMesh) window.glowMesh.scale.setScalar(originalScale + 0.2 - (dt * 0.2));
+                } else {
+                    clearInterval(pulseInterval);
+                    window.glowMaterial.uniforms.c.value = originalIntensity;
+                    if (window.glowMesh) window.glowMesh.scale.setScalar(originalScale);
+                }
+            }, 16);
+        };
+        
+        window.losePower = function() {
+            if (!window.glowMaterial) return;
+            let originalIntensity = window.glowMaterial.uniforms.c.value;
+            window.glowMaterial.uniforms.c.value = 0.1;
+            if (window.controls) window.controls.autoRotateSpeed = 0.5;
+            
+            setTimeout(() => {
+                let t = 0;
+                let recoverInterval = setInterval(() => {
+                    t += 0.05;
+                    if (t <= 1) {
+                        window.glowMaterial.uniforms.c.value = 0.1 + (t * (originalIntensity - 0.1));
+                        if (window.controls) window.controls.autoRotateSpeed = 0.5 + (t * 1.5);
+                    } else {
+                        clearInterval(recoverInterval);
+                        window.glowMaterial.uniforms.c.value = originalIntensity;
+                        if (window.controls) window.controls.autoRotateSpeed = 2.0;
+                    }
+                }, 16);
+            }, 1000);
+        };
+        
+        window.setReactorSpeed = function(speed) {
+            if (window.controls) {
+                window.controls.autoRotateSpeed = speed;
+            }
+        };
+        
+        window.dissolveReactor = function() {
+            if (window.glowMaterial) window.glowMaterial.uniforms.c.value = 3.0;
+            setTimeout(() => {
+                if (window.glowMaterial) window.glowMaterial.uniforms.c.value = 1.0;
+                window.setReactorSpeed(2.0);
+            }, 500);
+        };
+
+</script>
+  <script src="ShaderPass.js">
+        // Added for setup wizard boot sequence
+        window.accelerateReactor = function() {
+            // Speed up the rotation drastically for the boot sequence
+            if (window.controls) {
+                window.controls.autoRotateSpeed = 25.0;
+            }
+        };
+    
+
+        // Cinematic Reactor Controls for Setup Wizard
+        window.triggerPulse = function() {
+            if (!window.glowMaterial) return;
+            let originalIntensity = window.glowMaterial.uniforms.c.value;
+            let originalScale = window.glowMesh ? window.glowMesh.scale.x : 1;
+            
+            let t = 0;
+            let pulseInterval = setInterval(() => {
+                t += 0.1;
+                if (t <= 1) {
+                    window.glowMaterial.uniforms.c.value = originalIntensity + (t * 0.5);
+                    if (window.glowMesh) window.glowMesh.scale.setScalar(originalScale + (t * 0.2));
+                } else if (t <= 2) {
+                    let dt = t - 1;
+                    window.glowMaterial.uniforms.c.value = originalIntensity + 0.5 - (dt * 0.5);
+                    if (window.glowMesh) window.glowMesh.scale.setScalar(originalScale + 0.2 - (dt * 0.2));
+                } else {
+                    clearInterval(pulseInterval);
+                    window.glowMaterial.uniforms.c.value = originalIntensity;
+                    if (window.glowMesh) window.glowMesh.scale.setScalar(originalScale);
+                }
+            }, 16);
+        };
+        
+        window.losePower = function() {
+            if (!window.glowMaterial) return;
+            let originalIntensity = window.glowMaterial.uniforms.c.value;
+            window.glowMaterial.uniforms.c.value = 0.1;
+            if (window.controls) window.controls.autoRotateSpeed = 0.5;
+            
+            setTimeout(() => {
+                let t = 0;
+                let recoverInterval = setInterval(() => {
+                    t += 0.05;
+                    if (t <= 1) {
+                        window.glowMaterial.uniforms.c.value = 0.1 + (t * (originalIntensity - 0.1));
+                        if (window.controls) window.controls.autoRotateSpeed = 0.5 + (t * 1.5);
+                    } else {
+                        clearInterval(recoverInterval);
+                        window.glowMaterial.uniforms.c.value = originalIntensity;
+                        if (window.controls) window.controls.autoRotateSpeed = 2.0;
+                    }
+                }, 16);
+            }, 1000);
+        };
+        
+        window.setReactorSpeed = function(speed) {
+            if (window.controls) {
+                window.controls.autoRotateSpeed = speed;
+            }
+        };
+        
+        window.dissolveReactor = function() {
+            if (window.glowMaterial) window.glowMaterial.uniforms.c.value = 3.0;
+            setTimeout(() => {
+                if (window.glowMaterial) window.glowMaterial.uniforms.c.value = 1.0;
+                window.setReactorSpeed(2.0);
+            }, 500);
+        };
+
+</script>
+  <script src="UnrealBloomPass.js">
+        // Added for setup wizard boot sequence
+        window.accelerateReactor = function() {
+            // Speed up the rotation drastically for the boot sequence
+            if (window.controls) {
+                window.controls.autoRotateSpeed = 25.0;
+            }
+        };
+    
+
+        // Cinematic Reactor Controls for Setup Wizard
+        window.triggerPulse = function() {
+            if (!window.glowMaterial) return;
+            let originalIntensity = window.glowMaterial.uniforms.c.value;
+            let originalScale = window.glowMesh ? window.glowMesh.scale.x : 1;
+            
+            let t = 0;
+            let pulseInterval = setInterval(() => {
+                t += 0.1;
+                if (t <= 1) {
+                    window.glowMaterial.uniforms.c.value = originalIntensity + (t * 0.5);
+                    if (window.glowMesh) window.glowMesh.scale.setScalar(originalScale + (t * 0.2));
+                } else if (t <= 2) {
+                    let dt = t - 1;
+                    window.glowMaterial.uniforms.c.value = originalIntensity + 0.5 - (dt * 0.5);
+                    if (window.glowMesh) window.glowMesh.scale.setScalar(originalScale + 0.2 - (dt * 0.2));
+                } else {
+                    clearInterval(pulseInterval);
+                    window.glowMaterial.uniforms.c.value = originalIntensity;
+                    if (window.glowMesh) window.glowMesh.scale.setScalar(originalScale);
+                }
+            }, 16);
+        };
+        
+        window.losePower = function() {
+            if (!window.glowMaterial) return;
+            let originalIntensity = window.glowMaterial.uniforms.c.value;
+            window.glowMaterial.uniforms.c.value = 0.1;
+            if (window.controls) window.controls.autoRotateSpeed = 0.5;
+            
+            setTimeout(() => {
+                let t = 0;
+                let recoverInterval = setInterval(() => {
+                    t += 0.05;
+                    if (t <= 1) {
+                        window.glowMaterial.uniforms.c.value = 0.1 + (t * (originalIntensity - 0.1));
+                        if (window.controls) window.controls.autoRotateSpeed = 0.5 + (t * 1.5);
+                    } else {
+                        clearInterval(recoverInterval);
+                        window.glowMaterial.uniforms.c.value = originalIntensity;
+                        if (window.controls) window.controls.autoRotateSpeed = 2.0;
+                    }
+                }, 16);
+            }, 1000);
+        };
+        
+        window.setReactorSpeed = function(speed) {
+            if (window.controls) {
+                window.controls.autoRotateSpeed = speed;
+            }
+        };
+        
+        window.dissolveReactor = function() {
+            if (window.glowMaterial) window.glowMaterial.uniforms.c.value = 3.0;
+            setTimeout(() => {
+                if (window.glowMaterial) window.glowMaterial.uniforms.c.value = 1.0;
+                window.setReactorSpeed(2.0);
+            }, 500);
+        };
+
+</script>
+</head>
+<body>
+  <div id="canvas-container"></div>
+
+  <script>
+    const container = document.getElementById("canvas-container");
+    const width = Math.max(1, container.clientWidth || window.innerWidth);
+    const height = Math.max(1, container.clientHeight || window.innerHeight);
+
+    // ——— SCENE & CAMERA ———
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.FogExp2(0x050505, 0.05);
+
+    const camera = new THREE.PerspectiveCamera(55, width / height, 0.1, 500);
+    camera.position.set(0, 0, 5.8 + ((width < height) ? 6.5 : 0.0));
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 0.9;
+    container.appendChild(renderer.domElement);
+
+    // ——— POST PROCESSING ———
+    const composer = new THREE.EffectComposer(renderer);
+    composer.addPass(new THREE.RenderPass(scene, camera));
+
+    const bloom = new THREE.UnrealBloomPass(
+      new THREE.Vector2(width, height),
+      2.6, // strength
+      0.65, // radius
+      0.15  // threshold
+    );
+    composer.addPass(bloom);
+
+    const chromaticShader = {
+      uniforms: {
+        tDiffuse: { value: null },
+        uTime: { value: 0 },
+        uIntensity: { value: 0.003 }
+      },
+      vertexShader: `
+        varying vec2 vUv;
+        void main() {
+          vUv = uv;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: `
+        uniform sampler2D tDiffuse;
+        uniform float uTime;
+        uniform float uIntensity;
+        varying vec2 vUv;
+        void main() {
+          vec2 dir = vUv - vec2(0.5);
+          float d = length(dir);
+          float offset = uIntensity * d;
+          float flicker = 1.0 + 0.02 * sin(uTime * 30.0) * sin(uTime * 7.3);
+          vec4 cr = texture2D(tDiffuse, vUv + dir * offset);
+          vec4 cg = texture2D(tDiffuse, vUv);
+          vec4 cb = texture2D(tDiffuse, vUv - dir * offset * 0.5);
+          gl_FragColor = vec4(cr.r, cg.g * 1.05, cb.b * 0.6, 1.0) * flicker;
+          gl_FragColor.rgb = mix(gl_FragColor.rgb, gl_FragColor.rgb * vec3(1.15, 0.85, 0.55), 0.25);
+        }
+      `
+    };
+    const chromaticPass = new THREE.ShaderPass(chromaticShader);
+    composer.addPass(chromaticPass);
+
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.04;
+    controls.minDistance = 0.6;
+    controls.maxDistance = 40;
+    controls.zoomSpeed = 1.4;
+    controls.enablePan = false;
+
+    // ——— COLORS ———
+    const C_BRIGHT = 0xffaa30;
+    const C_MID    = 0xdd7700;
+    const C_DIM    = 0x884400;
+    const C_FAINT  = 0x442200;
+    const C_HOT    = 0xffcc66;
+    const C_CYAN   = 0x37ffea;
+
+    // ——— BACKGROUND ATMOSPHERE (STARS, FAINT GRID & DUST) ———
+    const atmosphereGroup = new THREE.Group();
+    scene.add(atmosphereGroup);
+
+    // 1. Faint 3D Grid Floor & Ceiling
+    const gridHelper = new THREE.GridHelper(60, 40, 0xaa5500, 0x221100);
+    gridHelper.position.y = -4.5;
+    gridHelper.material.opacity = 0.08;
+    gridHelper.material.transparent = true;
+    atmosphereGroup.add(gridHelper);
+
+    // 2. Parallax Starfield
+    const starCount = 1200;
+    const starGeo = new THREE.BufferGeometry();
+    const starPos = new Float32Array(starCount * 3);
+    for (let i = 0; i < starCount; i++) {
+      starPos[i * 3]     = (Math.random() - 0.5) * 80;
+      starPos[i * 3 + 1] = (Math.random() - 0.5) * 80;
+      starPos[i * 3 + 2] = (Math.random() - 0.5) * 80;
+    }
+    starGeo.setAttribute("position", new THREE.Float32BufferAttribute(starPos, 3));
+    const starMat = new THREE.PointsMaterial({
+      color: 0xffddaa,
+      size: 0.03,
+      transparent: true,
+      opacity: 0.35,
+      blending: THREE.AdditiveBlending
+    });
+    const starPoints = new THREE.Points(starGeo, starMat);
+    atmosphereGroup.add(starPoints);
+
+    // ——— HERO ORB GROUP ———
+    const orbGroup = new THREE.Group();
+    scene.add(orbGroup);
+
+    function lineMat(color, opacity = 1) {
+      return new THREE.LineBasicMaterial({
+        color,
+        transparent: true,
+        opacity,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false
+      });
+    }
+
+    function latRing(radius, lat, segs = 120) {
+      const r = radius * Math.cos(lat);
+      const y = radius * Math.sin(lat);
+      const pts = [];
+      for (let i = 0; i <= segs; i++) {
+        const a = (i / segs) * Math.PI * 2;
+        pts.push(new THREE.Vector3(r * Math.cos(a), y, r * Math.sin(a)));
+      }
+      return new THREE.BufferGeometry().setFromPoints(pts);
+    }
+
+    function meridian(radius, lon, segs = 120) {
+      const pts = [];
+      for (let i = 0; i <= segs; i++) {
+        const lat = (i / segs) * Math.PI - Math.PI / 2;
+        pts.push(
+          new THREE.Vector3(
+            radius * Math.cos(lat) * Math.cos(lon),
+            radius * Math.sin(lat),
+            radius * Math.cos(lat) * Math.sin(lon)
+          )
+        );
+      }
+      return new THREE.BufferGeometry().setFromPoints(pts);
+    }
+
+    // LAYER 1: OUTER SHELL
+    const outerShell = new THREE.Group();
+    const R1 = 2.0;
+
+    for (let i = -15; i <= 15; i++) {
+      const lat = (i / 15) * (Math.PI / 2) * 0.95;
+      const opacity = i % 3 === 0 ? 0.5 : 0.12;
+      const color = i % 3 === 0 ? C_MID : C_FAINT;
+      outerShell.add(new THREE.Line(latRing(R1, lat), lineMat(color, opacity)));
+    }
+
+    for (let i = 0; i < 24; i++) {
+      const lon = (i / 24) * Math.PI * 2;
+      const isMajor = i % 6 === 0;
+      outerShell.add(
+        new THREE.Line(
+          meridian(R1, lon),
+          lineMat(isMajor ? C_MID : C_FAINT, isMajor ? 0.6 : 0.1)
+        )
+      );
+    }
+
+    const CROSS_LINES = 18;
+    const CROSS_SPREAD = 0.25;
+    for (let i = 0; i < 4; i++) {
+      const lon = (i / 4) * Math.PI * 2;
+      for (let j = 0; j < CROSS_LINES; j++) {
+        const t = (j / (CROSS_LINES - 1)) * 2 - 1;
+        const offset = (t * CROSS_SPREAD) / 2;
+        const falloff = 1 - Math.abs(t) * 0.7;
+        const opacity = 0.85 * falloff;
+        const color = Math.abs(t) < 0.3 ? C_BRIGHT : C_MID;
+        outerShell.add(
+          new THREE.Line(meridian(R1, lon + offset, 200), lineMat(color, opacity))
+        );
+      }
+    }
+
+    const EQ_LINES = 20;
+    const EQ_SPREAD = 0.35;
+    for (let j = 0; j < EQ_LINES; j++) {
+      const t = (j / (EQ_LINES - 1)) * 2 - 1;
+      const offset = (t * EQ_SPREAD) / 2;
+      const falloff = 1 - Math.abs(t) * 0.65;
+      const opacity = 0.8 * falloff;
+      const color = Math.abs(t) < 0.3 ? C_BRIGHT : C_MID;
+      outerShell.add(
+        new THREE.Line(latRing(R1, offset, 200), lineMat(color, opacity))
+      );
+    }
+    orbGroup.add(outerShell);
+
+    // LAYER 2: GRID PANELS
+    const panelGroup = new THREE.Group();
+    function createSpherePanel(latCenter, lonCenter, latSpan, lonSpan, radius, divisions = 4) {
+      const group = new THREE.Group();
+      const mat = lineMat(C_DIM, 0.25);
+      for (let i = 0; i <= divisions; i++) {
+        const lat = latCenter - latSpan / 2 + (i / divisions) * latSpan;
+        const pts = [];
+        for (let j = 0; j <= divisions * 4; j++) {
+          const lon = lonCenter - lonSpan / 2 + (j / (divisions * 4)) * lonSpan;
+          pts.push(
+            new THREE.Vector3(
+              radius * Math.cos(lat) * Math.cos(lon),
+              radius * Math.sin(lat),
+              radius * Math.cos(lat) * Math.sin(lon)
+            )
+          );
+        }
+        group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), mat));
+      }
+      for (let j = 0; j <= divisions; j++) {
+        const lon = lonCenter - lonSpan / 2 + (j / divisions) * lonSpan;
+        const pts = [];
+        for (let i = 0; i <= divisions * 4; i++) {
+          const lat = latCenter - latSpan / 2 + (i / (divisions * 4)) * latSpan;
+          pts.push(
+            new THREE.Vector3(
+              radius * Math.cos(lat) * Math.cos(lon),
+              radius * Math.sin(lat),
+              radius * Math.cos(lat) * Math.sin(lon)
+            )
+          );
+        }
+        group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), mat));
+      }
+      return group;
+    }
+
+    for (let i = 0; i < 30; i++) {
+      const lat = (Math.random() - 0.5) * Math.PI * 0.8;
+      const lon = Math.random() * Math.PI * 2;
+      const size = 0.15 + Math.random() * 0.25;
+      const panel = createSpherePanel(lat, lon, size, size, R1 + 0.01, 3 + Math.floor(Math.random() * 3));
+      panelGroup.add(panel);
+    }
+    orbGroup.add(panelGroup);
+
+    // LAYER 3: SECONDARY SHELL
+    const shell2 = new THREE.Group();
+    const R2 = 2.12;
+
+    for (let i = 0; i < 16; i++) {
+      const lat = (Math.random() - 0.5) * Math.PI * 0.85;
+      const startLon = Math.random() * Math.PI * 2;
+      const arcLen = 0.3 + Math.random() * 1.2;
+      const pts = [];
+      const segs = 60;
+      const r = R2 * Math.cos(lat);
+      const y = R2 * Math.sin(lat);
+      for (let j = 0; j <= segs; j++) {
+        const a = startLon + (j / segs) * arcLen;
+        pts.push(new THREE.Vector3(r * Math.cos(a), y, r * Math.sin(a)));
+      }
+      shell2.add(
+        new THREE.Line(
+          new THREE.BufferGeometry().setFromPoints(pts),
+          lineMat(C_MID, 0.2 + Math.random() * 0.3)
+        )
+      );
+    }
+    orbGroup.add(shell2);
+
+    // LAYER 4: INNER CORE
+    const innerCore = new THREE.Group();
+    const R3 = 0.9;
+
+    for (let s = 0; s < 8; s++) {
+      const pts = [];
+      const turns = 3 + Math.random() * 2;
+      const segs = 300;
+      const phase = (s / 8) * Math.PI * 2;
+      for (let i = 0; i <= segs; i++) {
+        const t = i / segs;
+        const lat = t * Math.PI - Math.PI / 2;
+        const lon = t * turns * Math.PI * 2 + phase;
+        pts.push(
+          new THREE.Vector3(
+            R3 * Math.cos(lat) * Math.cos(lon),
+            R3 * Math.sin(lat),
+            R3 * Math.cos(lat) * Math.sin(lon)
+          )
+        );
+      }
+      innerCore.add(
+        new THREE.Line(
+          new THREE.BufferGeometry().setFromPoints(pts),
+          lineMat(C_BRIGHT, 0.3 + Math.random() * 0.2)
+        )
+      );
+    }
+    orbGroup.add(innerCore);
+
+    // LAYER 5: INNERMOST CORE & ELECTRIC ARCS
+    const coreR = 0.25;
+    const icoGeo = new THREE.IcosahedronGeometry(coreR, 1);
+    const icoEdges = new THREE.EdgesGeometry(icoGeo);
+    const icoWireMat = lineMat(C_HOT, 0.9);
+    const icoWire = new THREE.LineSegments(icoEdges, icoWireMat);
+    orbGroup.add(icoWire);
+
+    const coreSphereMat = new THREE.MeshBasicMaterial({
+      color: C_HOT,
+      transparent: true,
+      opacity: 0.15,
+      blending: THREE.AdditiveBlending
+    });
+    const coreSphere = new THREE.Mesh(new THREE.SphereGeometry(0.15, 16, 16), coreSphereMat);
+    orbGroup.add(coreSphere);
+
+    const glowSphereMat = new THREE.MeshBasicMaterial({
+      color: C_MID,
+      transparent: true,
+      opacity: 0.04,
+      blending: THREE.AdditiveBlending
+    });
+    const glowSphere = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), glowSphereMat);
+    orbGroup.add(glowSphere);
+
+    // Electric Arcs Group
+    const electricArcsGroup = new THREE.Group();
+    const arcMat = lineMat(C_CYAN, 0.85);
+    for (let a = 0; a < 6; a++) {
+      const arcPts = [];
+      for (let p = 0; p <= 12; p++) {
+        arcPts.push(new THREE.Vector3((Math.random() - 0.5) * 1.8, (Math.random() - 0.5) * 1.8, (Math.random() - 0.5) * 1.8));
+      }
+      const arcLine = new THREE.Line(new THREE.BufferGeometry().setFromPoints(arcPts), arcMat);
+      electricArcsGroup.add(arcLine);
+    }
+    electricArcsGroup.visible = false;
+    orbGroup.add(electricArcsGroup);
+
+    // DUST PARTICLES
+    const dustCount = 4500;
+    const dustPos = new Float32Array(dustCount * 3);
+    for (let i = 0; i < dustCount; i++) {
+      const rr = 0.5 + Math.pow(Math.random(), 0.6) * 10;
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.acos(2 * Math.random() - 1);
+      dustPos[i * 3]     = rr * Math.sin(phi) * Math.cos(theta);
+      dustPos[i * 3 + 1] = rr * Math.cos(phi);
+      dustPos[i * 3 + 2] = rr * Math.sin(phi) * Math.sin(theta);
+    }
+    const dustGeo = new THREE.BufferGeometry();
+    dustGeo.setAttribute("position", new THREE.Float32BufferAttribute(dustPos, 3));
+
+    const dotC = document.createElement("canvas");
+    dotC.width = dotC.height = 64;
+    const dCtx = dotC.getContext("2d");
+    const g = dCtx.createRadialGradient(32, 32, 0, 32, 32, 32);
+    g.addColorStop(0, "rgba(255,170,48,1)");
+    g.addColorStop(0.2, "rgba(255,120,20,0.6)");
+    g.addColorStop(0.5, "rgba(200,80,0,0.15)");
+    g.addColorStop(1, "rgba(100,40,0,0)");
+    dCtx.fillStyle = g;
+    dCtx.fillRect(0, 0, 64, 64);
+
+    const dustMat = new THREE.PointsMaterial({
+      map: new THREE.CanvasTexture(dotC),
+      size: 0.08,
+      transparent: true,
+      opacity: 0.65,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+      sizeAttenuation: true,
+      color: C_BRIGHT
+    });
+    const dustPoints = new THREE.Points(dustGeo, dustMat);
+    orbGroup.add(dustPoints);
+
+    // ——— REACTIVE BRAHMA ECHO STATE CONTROLLER ———
+    let currentState = "IDLE";
+    let targetScale = 1.0;
+    let currentScale = 1.0;
+    let rotSpeedY = 0.0015;
+    let targetCameraZ = 5.8;
+    let currentCameraZ = 5.8;
+    let warpSpeed = 0;
+
+    window.setBrahmaState = function(state) {
+      if (!state) return;
+      currentState = String(state).toUpperCase();
+      console.log("Ultron Jarvis 3D StateChanged:", currentState);
+
+      if (currentState === "LISTENING") {
+        targetScale = 1.30;
+        rotSpeedY = 0.004;
+        electricArcsGroup.visible = false;
+        targetCameraZ = 5.2;
+      } else if (currentState === "THINKING") {
+        targetScale = 1.15;
+        rotSpeedY = 0.012;
+        electricArcsGroup.visible = true;
+        targetCameraZ = 5.8;
+      } else if (currentState === "EXECUTING") {
+        targetScale = 1.25;
+        rotSpeedY = 0.020;
+        electricArcsGroup.visible = true;
+        targetCameraZ = 5.6;
+      } else if (currentState === "SPEAKING") {
+        targetScale = 1.40;
+        rotSpeedY = 0.025;
+        electricArcsGroup.visible = false;
+        targetCameraZ = 4.4; // Cinematic dolly zoom in
+      } else { // IDLE
+        currentState = "IDLE";
+        targetScale = 1.0;
+        rotSpeedY = 0.0015;
+        electricArcsGroup.visible = false;
+        targetCameraZ = 5.8;
+      }
+    };
+
+    // ANIMATION LOOP
+    const clock = new THREE.Clock();
+
+    function animate() {
+      requestAnimationFrame(animate);
+      const t = clock.getElapsedTime();
+
+      // Smooth scale & camera interpolation
+      currentScale += (targetScale - currentScale) * 0.05;
+      orbGroup.scale.setScalar(currentScale);
+      
+      currentCameraZ += (targetCameraZ - currentCameraZ) * 0.03;
+      camera.position.z = currentCameraZ + ((window.innerWidth < window.innerHeight) ? 6.5 : 0.0);
+
+      // Rotation dynamics
+      outerShell.rotation.y += rotSpeedY;
+      outerShell.rotation.x = Math.sin(t * 0.08) * 0.05;
+
+      panelGroup.rotation.y += rotSpeedY * 1.2;
+      panelGroup.rotation.x = Math.sin(t * 0.08 + 0.5) * 0.04;
+
+      shell2.rotation.y -= rotSpeedY * 0.8;
+      shell2.rotation.z = Math.sin(t * 0.12) * 0.03;
+
+      innerCore.rotation.y -= rotSpeedY * 2.5;
+      innerCore.rotation.z += 0.002;
+
+      icoWire.rotation.x += rotSpeedY * 3.0;
+      icoWire.rotation.y += rotSpeedY * 4.0;
+
+      // State specific dynamic effects
+      let pulseMod = 1.0;
+      if (currentState === "THINKING") {
+        pulseMod = 1.8;
+      } else if (currentState === "SPEAKING") {
+        pulseMod = 3.0;
+      } else if (currentState === "LISTENING") {
+        pulseMod = 1.4;
+      }
+
+      const wave1 = Math.sin(t * 1.2 * pulseMod);
+      const wave3 = Math.pow(Math.max(0, Math.sin(t * 0.4 * pulseMod)), 5);
+      const surge = wave3 * 1.5;
+
+      coreSphere.scale.setScalar(1 + surge + Math.sin(t * 5 * pulseMod) * 0.05);
+      coreSphereMat.opacity = Math.min(0.7, Math.max(0.1, (0.12 + wave1 * 0.06 + surge * 0.2)));
+      glowSphere.scale.setScalar(1 + surge * 0.8);
+
+      if (electricArcsGroup.visible) {
+        electricArcsGroup.rotation.y += 0.03;
+        electricArcsGroup.rotation.z += 0.02;
+      }
+
+      dustPoints.rotation.y += 0.0003;
+      
+      // Cinematic Warp Speed during speaking
+      if (currentState === "SPEAKING") {
+        warpSpeed += (0.8 - warpSpeed) * 0.05;
+      } else {
+        warpSpeed += (0 - warpSpeed) * 0.05;
+      }
+      atmosphereGroup.rotation.y += 0.0001;
+      atmosphereGroup.position.z = (t * warpSpeed * 10) % 20;
+
+      chromaticPass.uniforms.uTime.value = t;
+      chromaticPass.uniforms.uIntensity.value = 0.003 + (warpSpeed * 0.015);
+      
+      controls.update();
+      composer.render();
+    }
+
+    animate();
+
+    window.addEventListener("resize", () => {
+      const w = Math.max(1, window.innerWidth);
+      const h = Math.max(1, window.innerHeight);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h);
+      composer.setSize(w, h);
+    });
+  
+        // Added for setup wizard boot sequence
+        window.accelerateReactor = function() {
+            // Speed up the rotation drastically for the boot sequence
+            if (window.controls) {
+                window.controls.autoRotateSpeed = 25.0;
+            }
+        };
+    
+
+        // Cinematic Reactor Controls for Setup Wizard
+        window.triggerPulse = function() {
+            if (!window.glowMaterial) return;
+            let originalIntensity = window.glowMaterial.uniforms.c.value;
+            let originalScale = window.glowMesh ? window.glowMesh.scale.x : 1;
+            
+            let t = 0;
+            let pulseInterval = setInterval(() => {
+                t += 0.1;
+                if (t <= 1) {
+                    window.glowMaterial.uniforms.c.value = originalIntensity + (t * 0.5);
+                    if (window.glowMesh) window.glowMesh.scale.setScalar(originalScale + (t * 0.2));
+                } else if (t <= 2) {
+                    let dt = t - 1;
+                    window.glowMaterial.uniforms.c.value = originalIntensity + 0.5 - (dt * 0.5);
+                    if (window.glowMesh) window.glowMesh.scale.setScalar(originalScale + 0.2 - (dt * 0.2));
+                } else {
+                    clearInterval(pulseInterval);
+                    window.glowMaterial.uniforms.c.value = originalIntensity;
+                    if (window.glowMesh) window.glowMesh.scale.setScalar(originalScale);
+                }
+            }, 16);
+        };
+        
+        window.losePower = function() {
+            if (!window.glowMaterial) return;
+            let originalIntensity = window.glowMaterial.uniforms.c.value;
+            window.glowMaterial.uniforms.c.value = 0.1;
+            if (window.controls) window.controls.autoRotateSpeed = 0.5;
+            
+            setTimeout(() => {
+                let t = 0;
+                let recoverInterval = setInterval(() => {
+                    t += 0.05;
+                    if (t <= 1) {
+                        window.glowMaterial.uniforms.c.value = 0.1 + (t * (originalIntensity - 0.1));
+                        if (window.controls) window.controls.autoRotateSpeed = 0.5 + (t * 1.5);
+                    } else {
+                        clearInterval(recoverInterval);
+                        window.glowMaterial.uniforms.c.value = originalIntensity;
+                        if (window.controls) window.controls.autoRotateSpeed = 2.0;
+                    }
+                }, 16);
+            }, 1000);
+        };
+        
+        window.setReactorSpeed = function(speed) {
+            if (window.controls) {
+                window.controls.autoRotateSpeed = speed;
+            }
+        };
+        
+        window.dissolveReactor = function() {
+            if (window.glowMaterial) window.glowMaterial.uniforms.c.value = 3.0;
+            setTimeout(() => {
+                if (window.glowMaterial) window.glowMaterial.uniforms.c.value = 1.0;
+                window.setReactorSpeed(2.0);
+            }, 500);
+        };
+
+</script>
+</body>
+</html>

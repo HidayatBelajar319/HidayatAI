@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Brahma Connect</string>
+    <string name="accessibility_service_description">Brahma Connect accessibility bridge for device control setup.</string>
+</resources>
