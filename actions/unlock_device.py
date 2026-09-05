@@ -47,7 +47,7 @@ def unlock_device(parameters: dict, response=None, player=None, session_memory=N
     if not pin:
         return f"Error: No unlock PIN is saved for device '{target}'. Please set the PIN in the UI first."
         
-    # Send unlock command via brahma connect
+    # Send unlock command via Ultron Jarvis Connect
     command_params = {
         "target": target,
         "action": "unlock_phone",

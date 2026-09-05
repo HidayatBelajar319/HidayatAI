@@ -48,6 +48,8 @@ from smart_home import SmartHomeService
 from smart_home_page_new import BrahmaHomePage, _DeviceTile
 from workspace_store import store as workspace_store
 
+from floating_orb import UltronSphere, FloatingOrbController
+
 def _base_dir() -> Path:
     if getattr(sys, "frozen", False):
         return Path(sys.executable).parent
@@ -58,8 +60,8 @@ CONFIG_DIR = BASE_DIR / "config"
 API_FILE   = CONFIG_DIR / "api_keys.json"
 APP_SETTINGS_FILE = CONFIG_DIR / "app_settings.json"
 DISCORD_SETTINGS_FILE = CONFIG_DIR / "discord_bot.json"
-LOGO_FILE  = BASE_DIR / "assets" / "Brahma_Lite_Logo.png"
-LOGO_ICO   = BASE_DIR / "assets" / "Brahma_Lite_Logo.ico"
+LOGO_FILE  = BASE_DIR / "assets" / "UltronJarvis_Logo.png"
+LOGO_ICO   = BASE_DIR / "assets" / "UltronJarvis_Logo.ico"
 BACKGROUND_IMAGE_FILE = BASE_DIR / "assets" / "background.png"
 MODEL_DOWNLOAD_URL = "https://storage.googleapis.com/mediapipe-assets/hand_landmarker.task"
 
@@ -69,6 +71,18 @@ _LEFT_W  = 270
 _RIGHT_W = 480
 
 _OS = platform.system()  # "Windows" | "Darwin" | "Linux"
+
+
+def _apply_high_dpi_policy():
+    """Set Qt HighDPI rounding policy before QApplication is created."""
+    try:
+        from PyQt6.QtCore import Qt
+        if hasattr(QApplication, "setHighDpiScaleFactorRoundingPolicy"):
+            QApplication.setHighDpiScaleFactorRoundingPolicy(
+                Qt.HighDpiScaleFactorRoundingPolicy.RoundPreferFloor
+            )
+    except Exception:
+        pass
 
 
 class C:
@@ -2866,7 +2880,7 @@ class WorkspaceSidebar(QWidget):
         self._title.setStyleSheet("color: #FFFFFF; background: transparent; letter-spacing: 1px;")
         header.addWidget(self._title)
         header.addStretch()
-        self._close_btn = QPushButton("BRAHMA ECHO")
+        self._close_btn = QPushButton("ULTRON JARVIS")
         self._close_btn.setCursor(Qt.CursorShape.PointingHandCursor)
         self._close_btn.setFixedHeight(30)
         self._close_btn.setFont(QFont("Segoe UI", 9, QFont.Weight.Bold))
@@ -3295,7 +3309,7 @@ class WorkspaceSidebar(QWidget):
         if not raw:
             return
         low = raw.lower()
-        if low.startswith(("you:", "brahma echo:")):
+        if low.startswith(("you:", "ultron jarvis:")):
             return
         if low.startswith("sys:"):
             self.record_chat_event({"role": "system", "text": raw.split(":", 1)[1].strip(), "source": "local"})
@@ -3674,7 +3688,7 @@ class InlineChatWorkspace(QFrame):
         if not raw:
             return
         low = raw.lower()
-        if low.startswith(("you:", "brahma echo:")):
+        if low.startswith(("you:", "ultron jarvis:")):
             return
         if low.startswith("sys:"):
             self.record_chat_event({"role": "system", "text": raw.split(":", 1)[1].strip()})
@@ -3771,7 +3785,7 @@ class LauncherControlPanel(QDialog):
         lay.setContentsMargins(18, 16, 18, 16)
         lay.setSpacing(10)
 
-        title = QLabel("BRAHMA ECHO CONTROL")
+        title = QLabel("ULTRON JARVIS CONTROL")
         title.setFont(QFont("Segoe UI", 13, QFont.Weight.Bold))
         title.setStyleSheet("color: #FFFFFF; background: transparent; letter-spacing: 1px;")
         lay.addWidget(title)
@@ -4033,9 +4047,9 @@ class LogWidget(QScrollArea):
         tl = raw.lower()
         if tl.startswith("you:"):
             return "user", "You", raw[4:].strip()
-        if tl.startswith("brahma echo:"):
+        if tl.startswith("ultron jarvis:"):
             return "assistant", "Ultron Jarvis", raw[len("Ultron Jarvis:"):].strip()
-        if tl.startswith("brahma echo:"):
+        if tl.startswith("ultron jarvis:"):
             return "assistant", "Ultron Jarvis", raw[len("Ultron Jarvis:"):].strip()
         if tl.startswith("file:"):
             return "file", "File", raw[5:].strip()
@@ -6039,13 +6053,13 @@ class BootSequenceOverlay(QWidget):
                     painter.setFont(font1)
                     
                     # Manual vertical layout for text
-                    painter.drawText(QRectF(-ring_rad, -60, ring_rad*2, 60), Qt.AlignmentFlag.AlignCenter, "BRAHMA")
+                    painter.drawText(QRectF(-ring_rad, -60, ring_rad*2, 60), Qt.AlignmentFlag.AlignCenter, "ULTRON")
                     
                     painter.setPen(QColor(255, 200, 87, alpha))
                     font2 = QFont("Segoe UI", 16, QFont.Weight.Medium)
                     font2.setLetterSpacing(QFont.SpacingType.AbsoluteSpacing, 2)
                     painter.setFont(font2)
-                    painter.drawText(QRectF(-ring_rad, 0, ring_rad*2, 40), Qt.AlignmentFlag.AlignCenter, "Echo")
+                    painter.drawText(QRectF(-ring_rad, 0, ring_rad*2, 40), Qt.AlignmentFlag.AlignCenter, "JARVIS")
                     
                     # Status message cycling
                     msg_idx = int(((self._time - 2.5) / 1.5) * len(self._status_messages))
@@ -6901,6 +6915,13 @@ class MainWindow(QMainWindow):
         sc_right = QShortcut(QKeySequence("Ctrl+]"), self)
         sc_right.activated.connect(self._toggle_right_sidebar)
 
+        # Floating corner orb + mini chat popup, wired to the same chat backend.
+        try:
+            self._orb_controller = FloatingOrbController(self)
+            self._orb_controller.show()
+        except Exception:
+            self._orb_controller = None
+
     def _toggle_fullscreen(self):
         if self.isFullScreen():
             self.showNormal()
@@ -7372,11 +7393,11 @@ class MainWindow(QMainWindow):
             l.setStyleSheet(f"color: {color}; background: transparent;")
             return l
 
-        lay.addWidget(_badge("BRAHMA ECHO", C.PRI_DIM))
+        lay.addWidget(_badge("ULTRON JARVIS", C.PRI_DIM))
         lay.addStretch()
 
         mid = QVBoxLayout(); mid.setSpacing(1)
-        title = QLabel("BRAHMA ECHO")
+        title = QLabel("ULTRON JARVIS")
         title.setAlignment(Qt.AlignmentFlag.AlignCenter)
         title.setFont(QFont("Courier New", 17, QFont.Weight.Bold))
         title.setStyleSheet(f"color: {C.PRI}; background: transparent;")
@@ -7731,7 +7752,7 @@ class MainWindow(QMainWindow):
                     self.on_chat_event({"role": "user", "text": user_msg, "source": source})
                 except Exception:
                     pass
-        if hasattr(self, "_result_card") and low.startswith("brahma echo:"):
+        if hasattr(self, "_result_card") and low.startswith("ultron jarvis:"):
             reply = raw.split(":", 1)[1].strip()
             self._result_card.set_body(reply[:80] + ("…" if len(reply) > 80 else ""))
             self._result_card.hide()
@@ -8297,7 +8318,7 @@ class MainWindow(QMainWindow):
         brand_lay.addWidget(_framed_logo(62, 44, bg="rgba(9,10,14,245)", border=C.BORDER_B, radius=10, inset=8))
         brand_text = QVBoxLayout()
         brand_text.setSpacing(2)
-        title = QLabel("<span style='color:#ffb300;'>BRAHMA ECHO</span><br><span style='color:#ffffff;'>LITE</span>")
+        title = QLabel("<span style='color:#ffb300;'>ULTRON JARVIS</span><br><span style='color:#ffffff;'>LITE</span>")
         title.setFont(QFont("Segoe UI", 16, QFont.Weight.Bold))
         title.setStyleSheet("background: transparent;")
         sub = QLabel("Your AI Assistant")
@@ -8442,6 +8463,12 @@ class MainWindow(QMainWindow):
         command_row.addWidget(self._result_card, alignment=Qt.AlignmentFlag.AlignVCenter)
         stage.addLayout(command_row, stretch=1)
 
+        # Animated gold Ultron sphere as the dashboard centrepiece.
+        self._ultron_sphere = UltronSphere()
+        self._ultron_sphere.setMinimumSize(220, 220)
+        self._ultron_sphere.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        command_row.addWidget(self._ultron_sphere, stretch=1)
+
         self._command_panel = QWidget()
         self._command_panel.setStyleSheet("background: transparent;")
         cmd_lay = QVBoxLayout(self._command_panel)
@@ -8475,7 +8502,17 @@ class MainWindow(QMainWindow):
         self._center_stack.addWidget(self._settings_hub_page)
 
         self._center_stack.setCurrentIndex(0)
+
+        # Pause the sphere animation when the dashboard tab is not visible to
+        # keep CPU usage low.
+        self._center_stack.currentChanged.connect(self._on_center_stack_changed)
+
         return self._center_stack
+
+    def _on_center_stack_changed(self, index: int):
+        sphere = getattr(self, "_ultron_sphere", None)
+        if sphere is not None:
+            sphere.set_active(index == 0)
 
     def _build_right_panel_modern(self) -> QWidget:
         w = QWidget()
@@ -9791,7 +9828,7 @@ class SystemConnectivityPage(QWidget):
             # Base variables
             base_dir = Path(os.path.abspath("."))
             script_path = base_dir / "main.py"
-            icon_path = base_dir / "assets" / "Brahma_Lite_Logo.ico"
+            icon_path = base_dir / "assets" / "UltronJarvis_Logo.ico"
             
             python_exe = sys.executable
             if not python_exe:

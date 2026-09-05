@@ -4,7 +4,7 @@ cwd = Path.cwd()
 sys.path.insert(0, str(cwd))
 from ui import BrahmaUI
 from brahma_connect.service import get_service
-ui = BrahmaUI(str(cwd / 'assets' / 'Brahma_Lite_Logo.png'), show_immediately=False)
+ui = BrahmaUI(str(cwd / 'assets' / 'UltronJarvis_Logo.png'), show_immediately=False)
 svc = get_service(cwd)
 ui.set_brahma_connect_service(svc)
 dp = ui._win._devices_page

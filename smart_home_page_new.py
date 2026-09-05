@@ -813,7 +813,7 @@ class BrahmaHomePage(QWidget):
         row = QHBoxLayout()
         row.setSpacing(12)
         text = QVBoxLayout()
-        title = QLabel("BRAHMA ECHO HOME")
+        title = QLabel("ULTRON JARVIS HOME")
         title.setFont(QFont("Segoe UI", 24, QFont.Weight.Black))
         title.setStyleSheet(f"color: {TEXT}; letter-spacing: 1px;")
         subtitle = QLabel("Control your smart home with Ultron Jarvis.")

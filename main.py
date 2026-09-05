@@ -133,7 +133,7 @@ def _ensure_desktop_shortcut() -> None:
         desktop_dir.mkdir(parents=True, exist_ok=True)
         shortcut_path = desktop_dir / "Ultron Jarvis.lnk"
         script_path = BASE_DIR / "main.py"
-        icon_path = BASE_DIR / "assets" / "Brahma_Lite_Logo.ico"
+        icon_path = BASE_DIR / "assets" / "UltronJarvis_Logo.ico"
 
         if not icon_path.exists():
             icon_path = None
@@ -321,10 +321,10 @@ def _wakeword_detected(text: str) -> bool:
     if not words:
         return False
     phrases = (
-        "brahma echo",
-        "hey brahma echo",
-        "hi brahma echo",
-        "hello brahma echo",
+        "ultron jarvis",
+        "hey ultron jarvis",
+        "hi ultron jarvis",
+        "hello ultron jarvis",
         "hey",
         "hi",
         "hello",
@@ -332,7 +332,7 @@ def _wakeword_detected(text: str) -> bool:
     compact = " ".join(words)
     if compact in phrases or any(p in compact for p in phrases):
         return True
-    return any(word in {"brahma echo", "hey", "hi", "hello"} for word in words)
+    return any(word in {"ultron jarvis", "hey", "hi", "hello"} for word in words)
 
 
 def _build_task_plan(text: str) -> list[str]:
@@ -568,7 +568,7 @@ TOOL_DECLARATIONS = [
     {
         "name": "connect_list_devices",
         "description": (
-            "Lists devices connected to Brahma Connect. Use when the user asks what devices are connected, "
+            "Lists devices connected to Ultron Jarvis Connect. Use when the user asks what devices are connected, "
             "what is online, or wants a simple inventory of paired devices."
         ),
         "parameters": {
@@ -616,7 +616,7 @@ TOOL_DECLARATIONS = [
     {
         "name": "connect_execute",
         "description": (
-            "Routes a Brahma Connect command to a paired device through the gateway. "
+            "Routes an Ultron Jarvis Connect command to a paired device through the gateway. "
             "Use for actions such as launch_app, open_url, get_battery, capture_screen, take_photo, "
             "clipboard_get, clipboard_set, send_file, receive_file, media_play, media_pause, volume_set, "
             "notification_list, get_device_info, close_app, mouse_move, keyboard_type, unlock_phone, file_list, file_read, file_write, file_delete."
@@ -650,7 +650,7 @@ TOOL_DECLARATIONS = [
     {
         "name": "connect_pair_device",
         "description": (
-            "Creates or approves Brahma Connect pairing. Use to generate a QR code / pairing code for a new device, "
+            "Creates or approves Ultron Jarvis Connect pairing. Use to generate a QR code / pairing code for a new device, "
             "or to approve a pending pairing request."
         ),
         "parameters": {
@@ -666,7 +666,7 @@ TOOL_DECLARATIONS = [
     {
         "name": "connect_disconnect_device",
         "description": (
-            "Disconnects a device from Brahma Connect and marks it offline. "
+            "Disconnects a device from Ultron Jarvis Connect and marks it offline. "
             "Use when the user asks to disconnect, log out, or stop a paired device."
         ),
         "parameters": {
@@ -1376,10 +1376,10 @@ class BrahmaLive:
             devices = self._smart_home.list_devices()
             routed_text_home = sd_mgr.route_command(text, devices)
             if routed_text_home != text:
-                print(f"[BRAHMA ECHO] Redirection: '{text}' -> '{routed_text_home}'")
+                print(f"[ULTRON JARVIS] Redirection: '{text}' -> '{routed_text_home}'")
                 text = routed_text_home
         except Exception as e:
-            print(f"[BRAHMA ECHO] Redirection error: {e}")
+            print(f"[ULTRON JARVIS] Redirection error: {e}")
 
         developer_settings = self.ui._load_app_settings() if hasattr(self.ui, "_load_app_settings") else {}
         developer_enabled = bool(developer_settings.get("developer_mode_enabled", False))
@@ -1658,13 +1658,13 @@ class BrahmaLive:
             result = json.loads(result_json)
             if result.get("success", False):
                 detail = str(result.get("detail") or result.get("error") or "Device command completed.")
-                title = f"Brahma Connect: {action}"
+                title = f"Ultron Jarvis Connect: {action}"
                 self.ui.update_task_workspace(
                     title=title,
                     command=text,
                     plan=[
                         "Identify the paired phone or device",
-                        "Route the command through Brahma Connect",
+                        "Route the command through Ultron Jarvis Connect",
                         "Verify the device response",
                         "Report the result",
                     ],
@@ -1679,7 +1679,7 @@ class BrahmaLive:
                     self.ui.set_state("LISTENING")
                 return True
 
-            self.ui.write_log(f"ERR: Brahma Connect command failed: {result.get('error') or 'Unknown error'}")
+            self.ui.write_log(f"ERR: Ultron Jarvis Connect command failed: {result.get('error') or 'Unknown error'}")
             return False
         except Exception:
             return False
@@ -2180,7 +2180,7 @@ class BrahmaLive:
                 try:
                     reply = _gemini_text_reply(request_text)
                 except Exception as e:
-                    print(f"[BRAHMA ECHO] ⚠️ Gemini fallback failed: {e}")
+                    print(f"[ULTRON JARVIS] ⚠️ Gemini fallback failed: {e}")
                     if _is_gemini_limit_error(e):
                         self._use_openrouter_first = True
 
@@ -2194,7 +2194,7 @@ class BrahmaLive:
                         ),
                     )
                 except Exception as e:
-                    print(f"[BRAHMA ECHO] ⚠️ OpenRouter fallback failed: {e}")
+                    print(f"[ULTRON JARVIS] ⚠️ OpenRouter fallback failed: {e}")
                     if gemini_first and not self._use_openrouter_first and _is_gemini_limit_error(e):
                         self._use_openrouter_first = True
             reply = (reply or "").strip()
@@ -2209,7 +2209,7 @@ class BrahmaLive:
                 self.ui.set_state("LISTENING")
         except Exception as e:
             msg = f"Fallback reply failed: {e}"
-            print(f"[BRAHMA ECHO] ⚠️ {msg}")
+            print(f"[ULTRON JARVIS] ⚠️ {msg}")
             self.ui.write_log(f"ERR: {msg}")
             try:
                 self.ui.finish_task_workspace(msg, "Reply failed.", 100)
@@ -2291,7 +2291,7 @@ class BrahmaLive:
         name = fc.name
         args = dict(fc.args or {})
 
-        print(f"[BRAHMA ECHO] 🔧 {name}  {args}")
+        print(f"[ULTRON JARVIS] 🔧 {name}  {args}")
         self.speak(f"Working on {name.replace('_', ' ')}...")
         self.ui.set_state("THINKING")
         try:
@@ -2516,7 +2516,7 @@ class BrahmaLive:
         if not self.ui.muted:
             self.ui.set_state("LISTENING")
 
-        print(f"[BRAHMA ECHO] 📤 {name} → {str(result)[:80]}")
+        print(f"[ULTRON JARVIS] 📤 {name} → {str(result)[:80]}")
 
         return types.FunctionResponse(
             id=fc.id, name=name,
@@ -2567,7 +2567,7 @@ class BrahmaLive:
             await self.session.send_realtime_input(media=msg)
 
     async def _listen_audio(self):
-        print("[BRAHMA ECHO] 🎤 Mic started")
+        print("[ULTRON JARVIS] 🎤 Mic started")
         loop = asyncio.get_event_loop()
 
         def callback(indata, frames, time_info, status):
@@ -2590,15 +2590,15 @@ class BrahmaLive:
                 blocksize=CHUNK_SIZE,
                 callback=callback,
             ):
-                print("[BRAHMA ECHO] 🎤 Mic stream open")
+                print("[ULTRON JARVIS] 🎤 Mic stream open")
                 while True:
                     await asyncio.sleep(0.1)
         except Exception as e:
-            print(f"[BRAHMA ECHO] ❌ Mic: {e}")
+            print(f"[ULTRON JARVIS] ❌ Mic: {e}")
             raise
 
     async def _receive_audio(self):
-        print("[BRAHMA ECHO] 👂 Recv started")
+        print("[ULTRON JARVIS] 👂 Recv started")
         out_buf, in_buf = [], []
 
         try:
@@ -2656,7 +2656,7 @@ class BrahmaLive:
                     if response.tool_call:
                         fn_responses = []
                         for fc in response.tool_call.function_calls:
-                            print(f"[BRAHMA ECHO] 📞 {fc.name}")
+                            print(f"[ULTRON JARVIS] 📞 {fc.name}")
                             fr = await self._execute_tool(fc)
                             fn_responses.append(fr)
                         await self.session.send_tool_response(
@@ -2664,12 +2664,12 @@ class BrahmaLive:
                         )
 
         except Exception as e:
-            print(f"[BRAHMA ECHO] ❌ Recv: {e}")
+            print(f"[ULTRON JARVIS] ❌ Recv: {e}")
             traceback.print_exc()
             raise
 
     async def _play_audio(self):
-        print("[BRAHMA ECHO] 🔊 Play started")
+        print("[ULTRON JARVIS] 🔊 Play started")
         loop = asyncio.get_event_loop()
 
         stream = sd.RawOutputStream(
@@ -2685,7 +2685,7 @@ class BrahmaLive:
                 self.set_speaking(True)
                 await asyncio.to_thread(stream.write, chunk)
         except Exception as e:
-            print(f"[BRAHMA ECHO] ❌ Play: {e}")
+            print(f"[ULTRON JARVIS] ❌ Play: {e}")
             raise
         finally:
             self.set_speaking(False)
@@ -2734,7 +2734,7 @@ class BrahmaLive:
 
         while True:
             try:
-                print("[BRAHMA ECHO] 🔌 Connecting...")
+                print("[ULTRON JARVIS] 🔌 Connecting...")
                 self.ui.set_state("THINKING")
                 config = self._build_config()
 
@@ -2747,7 +2747,7 @@ class BrahmaLive:
                         self.audio_in_queue = asyncio.Queue()
                         self.out_queue      = asyncio.Queue(maxsize=10)
 
-                        print("[BRAHMA ECHO] ✅ Connected.")
+                        print("[ULTRON JARVIS] ✅ Connected.")
                         try:
                             self.ui.boot_set_step_status("Connect AI backend", "done")
                             self.ui.boot_set_progress(75, "AI backend connected")
@@ -2779,7 +2779,7 @@ class BrahmaLive:
                         pass
                     
             except Exception as e:
-                print(f"[BRAHMA ECHO] ⚠️ {e}")
+                print(f"[ULTRON JARVIS] ⚠️ {e}")
                 traceback.print_exc()
                 if _is_gemini_limit_error(e):
                     self._use_openrouter_first = True
@@ -2787,13 +2787,13 @@ class BrahmaLive:
                 self._loop = None
             self.set_speaking(False)
             self.ui.set_state("LISTENING")
-            print("[BRAHMA ECHO] 🔄 Reconnecting in 5s...")
+            print("[ULTRON JARVIS] 🔄 Reconnecting in 5s...")
             await asyncio.sleep(5)
 
 def main():
     _startup_log("main entered")
     _ensure_desktop_shortcut()
-    ui = BrahmaUI(str(BASE_DIR / "assets" / "Brahma_Lite_Logo.png"), show_immediately=True)
+    ui = BrahmaUI(str(BASE_DIR / "assets" / "UltronJarvis_Logo.png"), show_immediately=True)
     dashboard = None
     dashboard_enabled = DashboardServer is not None and not _is_port_in_use(8000)
     if DashboardServer is not None and not dashboard_enabled:
@@ -2827,9 +2827,9 @@ def main():
             brahma_connect = get_brahma_connect_service(BASE_DIR)
             brahma_connect_enabled = bool(brahma_connect.gateway.config.enabled)
         except Exception as exc:
-            _startup_log(f"brahma connect init failed: {exc}")
+            _startup_log(f"ultron jarvis connect init failed: {exc}")
             try:
-                ui.write_log(f"ERR: Brahma Connect failed to initialize: {exc}")
+                ui.write_log(f"ERR: Ultron Jarvis Connect failed to initialize: {exc}")
             except Exception:
                 pass
             brahma_connect = None
@@ -2841,21 +2841,21 @@ def main():
     if brahma_connect is not None and brahma_connect_enabled:
         connect_port = int(getattr(brahma_connect.gateway.config, "port", 8765))
         if _is_port_in_use(connect_port):
-            _startup_log(f"brahma connect disabled: port {connect_port} already in use")
+            _startup_log(f"ultron jarvis connect disabled: port {connect_port} already in use")
             try:
-                ui.write_log(f"SYS: Brahma Connect is already running on port {connect_port}.")
+                ui.write_log(f"SYS: Ultron Jarvis Connect is already running on port {connect_port}.")
             except Exception:
                 pass
         else:
             def _start_brahma_connect_server():
                 try:
-                    _startup_log("brahma connect thread started")
+                    _startup_log("ultron jarvis connect thread started")
                     brahma_connect.start_background()
-                    _startup_log("brahma connect thread spawned")
+                    _startup_log("ultron jarvis connect thread spawned")
                 except Exception as exc:
-                    _startup_log(f"brahma connect thread error: {exc}")
+                    _startup_log(f"ultron jarvis connect thread error: {exc}")
                     try:
-                        ui.write_log(f"ERR: Brahma Connect server failed: {exc}")
+                        ui.write_log(f"ERR: Ultron Jarvis Connect server failed: {exc}")
                     except Exception:
                         pass
 

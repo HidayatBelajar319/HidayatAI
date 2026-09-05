@@ -113,7 +113,7 @@ export default function BrahmaOrb() {
       <div className="overlay-grain" />
       <div className="overlay-scanlines" />
 
-      <div className="hud hud-title">BRAHMA</div>
+      <div className="hud hud-title">ULTRON JARVIS</div>
 
       <div className="hud hud-hint">
         <div>

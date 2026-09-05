@@ -1,8 +1,8 @@
-# Brahma Connect
+# Ultron Jarvis Connect
 
-Brahma Connect is the local multi-device transport layer for Ultron Jarvis (Hidayat AI).
+Ultron Jarvis Connect is the local multi-device transport layer for Ultron Jarvis (Hidayat AI).
 
-It keeps the AI brain inside the existing Brahma desktop app and adds a
+It keeps the AI brain inside the existing Ultron Jarvis desktop app and adds a
 gateway that can pair with companion devices on the local network.
 
 ## Included foundation

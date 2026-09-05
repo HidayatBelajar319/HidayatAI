@@ -33,9 +33,9 @@ This repository includes a security overview for Ultron Jarvis's current runtime
 - Both API keys are loaded from the local config file and sent to the respective service clients.
 - `config/api_keys.json` is plaintext JSON and is not encrypted by the application.
 
-### Brahma Connect gateway exposure
+### Ultron Jarvis Connect gateway exposure
 
-Brahma Connect is the local device gateway layer for Ultron Jarvis.
+Ultron Jarvis Connect is the local device gateway layer for Ultron Jarvis.
 
 #### Configuration
 
@@ -123,7 +123,7 @@ Because the gateway binds to `0.0.0.0`, it is reachable from any interface on th
 ### Recommendations
 
 - Keep `config/api_keys.json` private and out of version control.
-- Use OS firewall rules to restrict access to port `8765` when Brahma Connect is enabled.
+- Use OS firewall rules to restrict access to port `8765` when Ultron Jarvis Connect is enabled.
 - Disable `advertise` in `config/brahma_connect.json` unless discovery is needed.
 - Revoke lost or untrusted devices using `/gateway/devices/{device_id}/revoke`.
 - Run Ultron Jarvis on a trusted local network.

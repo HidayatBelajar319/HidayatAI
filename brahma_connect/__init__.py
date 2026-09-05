@@ -1,4 +1,4 @@
-"""Brahma Connect subsystem.
+"""Ultron Jarvis Connect subsystem.
 
 This package adds the local gateway, device registry, pairing flow, and
 protocol definitions used by Ultron Jarvis (Hidayat AI) to reach companion devices.

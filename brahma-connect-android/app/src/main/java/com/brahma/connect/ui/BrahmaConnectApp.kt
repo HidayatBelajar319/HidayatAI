@@ -323,7 +323,7 @@ fun GlassCard(content: @Composable () -> Unit) {
 @Composable
 fun WelcomeScreen(onNext: () -> Unit) {
     Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
-        Text("BRAHMA", style = MaterialTheme.typography.displayLarge, fontWeight = FontWeight.Black, color = MaterialTheme.colorScheme.primary)
+        Text("ULTRON JARVIS", style = MaterialTheme.typography.displayLarge, fontWeight = FontWeight.Black, color = MaterialTheme.colorScheme.primary)
         Text("CONNECT", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Light, color = androidx.compose.ui.graphics.Color.White)
         Spacer(modifier = Modifier.height(60.dp))
         GlassCard {
@@ -397,7 +397,7 @@ private fun StartupPermissionsScreen(
     ) {
         Text("SETUP REQUIRED", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Black)
         Spacer(Modifier.height(8.dp))
-        Text("Enable the permissions Brahma Connect needs to control your phone reliably.", color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text("Enable the permissions Ultron Jarvis Connect needs to control your phone reliably.", color = MaterialTheme.colorScheme.onSurfaceVariant)
         Spacer(Modifier.height(20.dp))
         Card(colors = CardDefaults.cardColors(containerColor = androidx.compose.ui.graphics.Color.Black.copy(alpha = 0.55f), contentColor = androidx.compose.ui.graphics.Color.White), border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.3f))) {
             Column(Modifier.padding(18.dp)) {
@@ -448,7 +448,7 @@ private fun DiscoveryScreen(
         modifier = Modifier.fillMaxSize().padding(24.dp).background(androidx.compose.ui.graphics.Color.Transparent).verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Center,
     ) {
-        Text("BRAHMA CONNECT", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Black, color = androidx.compose.ui.graphics.Color.White)
+        Text("ULTRON JARVIS CONNECT", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Black, color = androidx.compose.ui.graphics.Color.White)
         Spacer(Modifier.height(8.dp))
         Text("Connect this device to Ultron Jarvis (Hidayat AI).", color = MaterialTheme.colorScheme.onSurfaceVariant)
         Spacer(Modifier.height(24.dp))
@@ -470,7 +470,7 @@ private fun DiscoveryScreen(
             Button(onClick = onConnect, modifier = Modifier.fillMaxWidth()) { Text("Connect") }
             Spacer(Modifier.height(12.dp))
         }
-        Button(onClick = onFindBrahma, modifier = Modifier.fillMaxWidth()) { Text("Find Brahma") }
+        Button(onClick = onFindBrahma, modifier = Modifier.fillMaxWidth()) { Text("Find Ultron Jarvis") }
         Spacer(Modifier.height(12.dp))
         FilledTonalButton(onClick = onScanQr, modifier = Modifier.fillMaxWidth()) { Text("Scan QR") }
         Spacer(Modifier.height(12.dp))

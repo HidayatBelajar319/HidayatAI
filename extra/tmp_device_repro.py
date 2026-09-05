@@ -11,7 +11,7 @@ from ui import BrahmaUI
 from brahma_connect.service import get_service
 
 try:
-    ui = BrahmaUI(str(wd / 'assets' / 'Brahma_Lite_Logo.png'), show_immediately=False)
+    ui = BrahmaUI(str(wd / 'assets' / 'UltronJarvis_Logo.png'), show_immediately=False)
     svc = get_service(wd)
     ui.set_brahma_connect_service(svc)
     dp = ui._win._devices_page

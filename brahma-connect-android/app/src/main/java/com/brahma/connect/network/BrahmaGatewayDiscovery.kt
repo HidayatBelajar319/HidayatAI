@@ -23,7 +23,7 @@ class BrahmaGatewayDiscovery(private val context: Context) {
                 val port = serviceInfo.port
                 if (host.isNotBlank() && port > 0) {
                     val endpoint = GatewayEndpoint(
-                        name = serviceInfo.serviceName ?: "Brahma PC",
+                        name = serviceInfo.serviceName ?: "Ultron Jarvis PC",
                         host = host,
                         port = port,
                     )

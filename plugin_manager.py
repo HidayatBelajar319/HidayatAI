@@ -49,7 +49,7 @@ class PluginManager:
             try:
                 fn = getattr(p, hook, None)
                 if callable(fn):
-                    # call with brahma echo if plugin expects it
+                    # call with Ultron Jarvis if plugin expects it
                     try:
                         res = fn(*args, **kwargs, brahma_echo=self.brahma_echo)
                     except TypeError:

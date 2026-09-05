@@ -37,7 +37,7 @@ if (-not (Test-Path $MainPy)) {
 }
 
 # Icon path
-$IconPath = Join-Path $HidayatAIRoot "assets\Brahma_Lite_Logo.ico"
+$IconPath = Join-Path $HidayatAIRoot "assets\UltronJarvis_Logo.ico"
 $IconArg = if (Test-Path $IconPath) { "$IconPath,0" } else { $null }
 
 # Resolve user's Desktop folder (handles OneDrive, folder redirection, etc.)

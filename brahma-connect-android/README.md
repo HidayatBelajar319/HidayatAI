@@ -1,10 +1,10 @@
-# Brahma Connect Android
+# Ultron Jarvis Connect Android
 
-Android agent for Brahma Connect.
+Android agent for Ultron Jarvis Connect.
 
 What this project is:
 - Native Android agent
-- WebSocket client for the existing Brahma Gateway
+- WebSocket client for the existing Ultron Jarvis Gateway
 - Minimal pairing and reconnect flow
 - First command set only
 

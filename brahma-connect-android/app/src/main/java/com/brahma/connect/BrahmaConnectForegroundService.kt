@@ -33,7 +33,7 @@ class BrahmaConnectForegroundService : Service() {
         client = BrahmaWebSocketClient(this, storage, DeviceCommandHandler(this))
         createNotificationChannel()
         try {
-            val notification = buildNotification("Brahma Connect", "Starting connection")
+            val notification = buildNotification("Ultron Jarvis Connect", "Starting connection")
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 startForeground(NOTIFICATION_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC)
             } else {
@@ -87,13 +87,13 @@ class BrahmaConnectForegroundService : Service() {
     private fun updateNotification() {
         val state = AgentStateStore.connectionState.value
         val text = when (state) {
-            ConnectionState.CONNECTED -> "Connected to Brahma"
-            ConnectionState.CONNECTING -> "Connecting to Brahma"
+            ConnectionState.CONNECTED -> "Connected to Ultron Jarvis"
+            ConnectionState.CONNECTING -> "Connecting to Ultron Jarvis"
             ConnectionState.RECONNECTING -> "Reconnecting"
             ConnectionState.DISCONNECTED -> "Disconnected"
         }
         val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        manager.notify(NOTIFICATION_ID, buildNotification("Brahma Connect", text))
+        manager.notify(NOTIFICATION_ID, buildNotification("Ultron Jarvis Connect", text))
     }
 
     private fun buildNotification(title: String, text: String): Notification {
@@ -108,7 +108,7 @@ class BrahmaConnectForegroundService : Service() {
 
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
-        val channel = NotificationChannel(CHANNEL_ID, "Brahma Connect", NotificationManager.IMPORTANCE_LOW)
+        val channel = NotificationChannel(CHANNEL_ID, "Ultron Jarvis Connect", NotificationManager.IMPORTANCE_LOW)
         val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         manager.createNotificationChannel(channel)
     }
