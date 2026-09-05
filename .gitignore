@@ -41,7 +41,6 @@ build/
 dist/
 *.spec
 *.exe
-*.apk
 *.msi
 *.pkg
 *.toc
